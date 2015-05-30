@@ -6,7 +6,7 @@ Pour les exemples qui vont suivre, considérons le code d'initialisation suivant 
 /* le module pour nos tests */
 var app = angular.module('appTest', []);
 
-/* un controller par défaut où appCtrl désigne la fonction qui gère le controller 'appCtrl' */
+/* un controller 'appCtrl' par défaut avec la fonction appCtrl associée */
 app.controller('appCtrl', appCtrl);
 ```
 
@@ -54,3 +54,27 @@ app.directive('beerCenter', function () {
 	<beer-center beer-name='beer'></beer-name> <!-- affiche Goudale ! -->
 </div>
 ```
+
+Ce qui est important de voir c'est que l'attribut beer-name fait référence à la variable beer du controller et non a une chaine de caractère 'beer'. Cela veut aussi dire que l'on peut donc passé tout type d'objet contenu dans le controller.
+
+```javascript
+function appCtrl = function ($scope) {
+	$scope.beer = {
+		name: 'Goudale'
+	}
+}
+
+app.directive('beerCenter', function () {
+	return {
+		scope: {
+			beer: '='
+		},
+		template: '<p>{{ beer.name }}</p>'
+	}
+});
+```
+```html
+<beer-center beer='beer'></beer-center> <!-- affiche Goudale ! -->
+```
+
+c'est déjà plus parlant. A noter que dans l'objet scope de la directive j'ai écrit directement '=' car l'attribut porte le même nom que la variable du scope isolé qu'on initialise.
