@@ -1,0 +1,66 @@
+<!doctype html>
+<html ng-app="playground">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Flashing angular example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.js"></script>
+</head>
+
+
+<body>
+<div ng-controller="main">
+    <flashing-text word="angular rocks"></flashing-text>
+</div>
+
+<style>
+    flashing-text {
+      font-size: 2em;  
+    }
+    
+    .paintInRed {
+        color: red;
+    }
+</style>
+
+<script>
+    (function (window, angular, undefined) {'use strict';
+
+        var app = angular.module('playground', []);
+        app.controller('main', function ($scope) {
+            $scope.name = 'A';
+        });
+
+
+
+        app.directive('flashingText', function ($interval) {
+
+            function link (scope, element, attrs) {
+                scope.word = [];
+
+                var update = function () {
+                    scope.word.length = 0;
+                    for (var i in attrs.word) {
+                        scope.word.push({
+                            letter: attrs.word[i],
+                            red: Math.floor(Math.random()*2)
+                        });
+                    }
+                }
+
+                $interval(update, 100);
+            }
+
+
+            return {
+                template: '<span ng-repeat="l in word track by $index" ng-class="l.red ? \'paintInRed\' : \'\'">{{ l.letter }}</span>',
+                scope: {},
+                link: link
+            }
+        });
+
+
+    })(window, window.angular)
+</script>
+</body>
+</html>
