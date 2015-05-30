@@ -15,7 +15,7 @@ app.controller('appCtrl', appCtrl);
 ## Chapitres
 1. [Scopes isolés](#scopes-isolés)
 2. [Propriété link d'une directive](#propriété-link-d-une-directive)
-
+3. [Différences entre $observe et $watch](#différences-entre-$observe-et-$watch)
 
 
 ## Scopes isolés
@@ -107,5 +107,9 @@ function link (scope, element, attributes) {
 	**element** est un objet jqLite (objet jQuery simplifié) et permet donc de manipuler le DOM de l'élément aisément. On peut donc par exemple utiliser .on() combiné aux évenement d'écoute d'Angular (e.g. element.on('$destroy', function () { ... })).
 - **attributes** représente les attributs de l'élément.
 
-Comme vu avec les scopes isolés, il est possible d'utiliser des variables du scope père. Cependant il est est aussi possible d'écouter tout changement de valeur d'attribut de la directive.
-Voir exemples/chameleon.html
+Comme vu avec les scopes isolés, il est possible d'utiliser des variables du scope père. Cependant il est est aussi possible d'écouter tout changement de valeur d'attribut de la directive. (Voir exemples/chameleon.html)
+
+
+## Différences entre $observe et $watch
+
+http://stackoverflow.com/a/30551084/773595

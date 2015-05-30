@@ -11,8 +11,9 @@
 
 <!-- // VIEW -->
 <div ng-init="environment='natural'">
-  environment : <input ng-model=environment><hr>
-  <chameleon env="{{ environment }}"></chameleon>
+  Environment : <input ng-model=environment> (try 'excited')
+  <hr>
+  Chameleon : <chameleon env="{{ environment }}"></chameleon>
 </div>
 
 
@@ -25,19 +26,28 @@
   // ----------------------------------------------- <chameleon>
   .directive('chameleon', function () { return {
     
-    template: 'I am {{ color }} !'
+    template: '"I am {{ color }} {{ onFire ? \', I am on fire !\' : \'\' }} !"'
     
     ,scope: {} // isolated
   
     ,link: function (scope, element, attrs) {
-  
-      attrs.$observe('env', function () {
+      
+      scope.onFire = false;
+      
+      scope.$watch('env', function (newV, oldV) {
+        if (newV !== oldV) // prevent trigger due to initialisation
+          scope.onFire = true;
+      });
+      
+      attrs.$observe('env', function (env, previousEnv) {
          scope.color = getColor();
       });
   
       function getColor () {
          switch (attrs.env) {
-            case 'excited': return 'red';
+            case 'excited':
+              scope.env = attrs.env; // the scope.$watch will trigger
+              return 'red';
             case 'natural':
             default: return 'green';
          }
