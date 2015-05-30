@@ -106,3 +106,6 @@ function link (scope, element, attributes) {
 - **element** représente l'élément sur lequel la directive s'applique; autrement dit l'élément du DOM.
 	**element** est un objet jqLite (objet jQuery simplifié) et permet donc de manipuler le DOM de l'élément aisément. On peut donc par exemple utiliser .on() combiné aux évenement d'écoute d'Angular (e.g. element.on('$destroy', function () { ... })).
 - **attributes** représente les attributs de l'élément.
+
+Comme vu avec les scopes isolés, il est possible d'utiliser des variables du scope père. Cependant il est est aussi possible d'écouter tout changement de valeur d'attribut de la directive.
+Voir exemples/chameleon.html
