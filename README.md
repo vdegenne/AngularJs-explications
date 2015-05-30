@@ -6,7 +6,7 @@ Lors de la déclaration de nouvelles directives, il est possible de définir un sc
 
 Par exemple,
 
-<code>
+```javascript
 var app = angular.module('appTest', []);
 
 app.controller('appCtrl', function ($scope) {
@@ -23,4 +23,4 @@ app.directive('myDirective', function () {
 <div ng-controller="appCtrl">
 	<my-directive></my-directive>
 </div>
-</code>
+```
