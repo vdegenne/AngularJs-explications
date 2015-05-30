@@ -14,6 +14,7 @@ app.controller('appCtrl', appCtrl);
 
 ## Chapitres
 1. [Scopes isolés](#scopes-isolés)
+2. [Propriété link d'une directive](#propriété-link-d-une-directive)
 
 
 
@@ -84,4 +85,24 @@ app.directive('beerCenter', function () {
 <beer-center beer='beer'></beer-center> <!-- affiche Goudale ! -->
 ```
 
-c'est déjà plus parlant. A noter que dans l'objet scope de la directive j'ai écrit directement '=' car l'attribut porte le même nom que la variable du scope isolé qu'on initialise.
+c'est déjà plus parlant. À noter que dans l'objet scope de la directive j'ai écrit directement '=' car l'attribut porte le même nom que la variable du scope isolé qu'on initialise.
+
+
+## Propriété link d'une directive
+
+Une directive peut, si elle ne possède pas de scope isolé, avoir accès aux différents éléments (variables, fonctions) du scope dans lequel elle est utilisé. En revanche si un scope isolé est introduit, cet accès doit s'effectué par l'intermédiaire des attributs définis sur la directive. Mais les attributs doivent être utilisés pour personaliser le service qu'offre la directive. Si la directive représente un service, qu'il soit léger ou complexe, toute la logique des traitements doit être contenue dans la directive en elle-même et non dans le controller englobant.
+
+Pour cela, la propriété link permet d'associer une fonction et ainsi d'encapsuler les traitements spécifiques à l'élement.
+
+La syntaxe de la fonction **link** est la suivante :
+
+```javascript
+function link (scope, element, attributes) {
+	
+}
+```
+
+- **scope** représente soit le scope englobant, soit le scope isolé s'il a été défini.
+- **element** représente l'élément sur lequel la directive s'applique; autrement dit l'élément du DOM.
+	**element** est un objet jqLite (objet jQuery simplifié) et permet donc de manipuler le DOM de l'élément aisément. On peut donc par exemple utiliser .on() combiné aux évenement d'écoute d'Angular (e.g. element.on('$destroy', function () { ... })).
+- **attributes** représente les attributs de l'élément.
