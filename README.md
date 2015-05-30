@@ -13,7 +13,7 @@ app.controller('appCtrl', appCtrl);
 
 
 ## Chapitres
-1. [Scopes isolés](Scopes-isolés)
+1. [Scopes isolés](scopes-isolés)
 
 
 
