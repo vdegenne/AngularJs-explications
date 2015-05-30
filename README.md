@@ -6,4 +6,21 @@ Lors de la déclaration de nouvelles directives, il est possible de définir un sc
 
 Par exemple,
 
+<code>
+var app = angular.module('appTest', []);
 
+app.controller('appCtrl', function ($scope) {
+	$scope.beer = 'Goudale';
+});
+
+app.directive('myDirective', function () {
+	return {
+		scope: {}, /* beer is not accessible anymore in the directive, snif.. */
+		template: '<p>{{ beer }}</p>' 
+	}
+});
+
+<div ng-controller="appCtrl">
+	<my-directive></my-directive>
+</div>
+</code>
