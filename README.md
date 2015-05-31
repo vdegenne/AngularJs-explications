@@ -16,7 +16,7 @@ app.controller('appCtrl', appCtrl);
 1. [Scopes isolés](#scopes-isolés)
 2. [Propriété link d'une directive](#propriété-link-d-une-directive)
 3. [Différences entre $observe et $watch](#différences-entre-$observe-et-$watch)
-
+5. [testing (Protractor)](#testing-(protractor))
 
 ## Scopes isolés
 
@@ -113,3 +113,48 @@ Comme vu avec les scopes isolés, il est possible d'utiliser des variables du sco
 ## Différences entre $observe et $watch
 
 http://stackoverflow.com/a/30551084/773595
+
+
+## ngRepeat et scopes
+
+en réalité, 
+
+
+## $destroy
+
+AngularJs possède des évenements personalisés comme c'est le cas de $destroy
+
+
+## Quelques notations intéressantes
+
+On peut associer une fonction controller directement à une partie du DOM :
+
+```javascript
+function MyCtrl ($scope) {
+	$scope.greets = 'yo';
+}
+```
+```html
+<div ng-controller=MyCtrl>{{ greets }}</div>
+```
+
+## testing (Protractor)
+
+https://angular.github.io/protractor/#/
+
+Étapes pour l'installation et la configuration
+
+1. Installation de protractor
+	```npm install -g protractor```
+2. mise à jour de webdriver-manager
+	```webdriver-manager update```
+3. lancement du serveur qui controlera le navigateur
+	```webdriver-manager start```
+4. création d'un fichier de test (avec code Jasmine)
+5. création d'un fichier de configuration (*conf.js*)
+	```exports.config = {
+	  seleniumAddress: 'http://localhost:4444/wd/hub',
+	  specs: ['todo-spec.js']
+	};```
+6. lancement du test
+	```protractor conf.js```
