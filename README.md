@@ -17,6 +17,7 @@ app.controller('appCtrl', appCtrl);
 2. [Propriété link d'une directive](#propriété-link-d-une-directive)
 3. [Différences entre $observe et $watch](#différences-entre-$observe-et-$watch)
 5. [testing (Protractor)](#testing-protractor)
+6. [testing (Karma)](#testing-karma)
 
 ## Scopes isolés
 
@@ -140,26 +141,87 @@ function MyCtrl ($scope) {
 
 ## testing (Protractor)
 
+Protactor est surtout utilisé pour faire des tests d'interface. Protactor lance un navigateur et en fonction des instructions de tests, manipule l'application comme un réel utilisateur (pour tester la logique interne des applications, voir Karma, ci-dessous).
+
 https://angular.github.io/protractor/#/
 
 Étapes pour l'installation et la configuration
 
 1. Installation de protractor
 
-	```npm install -g protractor```
+```npm install -g protractor```
 2. mise à jour de webdriver-manager
 
-	```webdriver-manager update```
+```webdriver-manager update```
 3. lancement du serveur qui controlera le navigateur
 
-	```webdriver-manager start```
+```webdriver-manager start```
 4. création d'un fichier de test (avec code Jasmine)
 5. création d'un fichier de configuration (*conf.js*)
 
-	```exports.config = {
-	  seleniumAddress: 'http://localhost:4444/wd/hub',
-	  specs: ['todo-spec.js']
-	};```
+```exports.config = {
+  seleniumAddress: 'http://localhost:4444/wd/hub',
+  specs: ['todo-spec.js']
+};```
 6. lancement du test
 
-	```protractor conf.js```
+```protractor conf.js```
+
+## testing (Karma)
+
+Permet de pouvoir tester le code interne AngularJs de l'application.
+
+http://karma-runner.github.io/0.12/index.html
+
+git cloner le projet tuto d'angular phoneApp est un bon moyen de comprendre comment fonctionne les tests de modules avec Karma : 
+
+[PhoneApp Page](https://docs.angularjs.org/tutorial/)
+```git clone --depth=14 https://github.com/angular/angular-phonecat.git``` 
+
+Un fichier de config karma.conf.js type est le suivant :
+
+```javascript
+module.exports = function (config) {
+    config.set({
+
+        basePath: '../',
+
+        files: [
+            'components/angular/angular.js',
+            'components/angular-mocks/angular-mocks.js',
+            'js/**/*.js',
+            'test/unit/**/*.js'
+        ],
+
+        autoWatch: true,
+
+        frameworks: ['jasmine'],
+
+        browsers: ['Chrome'],
+
+        plugins: [
+            'karma-chrome-launcher',
+            'karma-jasmine'
+        ],
+
+        junitReporter: {
+            outputFile: 'test_out/unit.xml',
+            suite: 'unit'
+        }
+
+    });
+};
+```
+
+Il ne faut pas oublié d'inclure angular-mocks dans la liste des fichiers javascript de test. Sinon jasmine ne peut pas importer des modules.
+
+le *package.json* donne la possibilité d'exécuter des scripts avec l'outil npm run,
+```json
+{
+	"scripts": {
+		"pretest" : "npm install",
+		"test" : "node node_modules/karma/bin/karma start test/karma.conf.js"
+	}
+}
+```
+Si l'on exécute ```npm run test```, 'pretest' est lancé avant 'test' et a pour effet d'installer les dépendances du projet dans *node_modules*. Puis 'test' est lancé.
