@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>& operator</title>
+    <script data-require="angular.js@1.3.x" src="https://code.angularjs.org/1.3.15/angular.js" data-semver="1.3.15"></script>
+    <script>
+      var app = angular.module('app', [])
+        .controller('MainCtrl', function ($scope) {
+          $scope.result = 0;
+          
+          $scope.addition = function (arg1, arg2) {
+            return arg1 + arg2;
+          }
+          
+          $scope.multiply = function (arg1, arg2) {
+            return arg1 * arg2;
+          }
+        })
+        
+        
+        .directive('calculator', function () {
+          return {
+            template: '<p>{{ result }}</p>',
+            scope: {
+              fct: '&'
+            },
+            link: function (scope, element, attrs) {
+              scope.result = scope.fct({
+                arg1: 2,
+                arg2: 5
+              })
+            }
+          }
+        });
+  </script>
+  </head>
+
+  <body ng-controller="MainCtrl">
+    <calculator fct="addition(arg1, arg2)"></calculator>
+    <calculator fct="multiply(2, 5)"></calculator>
+  </body>
+
+</html>

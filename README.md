@@ -14,10 +14,13 @@ app.controller('appCtrl', appCtrl);
 
 ## Chapitres
 1. [Scopes isolés](#scopes-isolés)
-2. [Propriété link d'une directive](#propriété-link-d-une-directive)
-3. [Différences entre $observe et $watch](#différences-entre-$observe-et-$watch)
+2. [Transclude](#transclude)
+3. [Propriété link d'une directive](#propriété-link-d-une-directive)
+4. [Différences entre $observe et $watch](#différences-entre-$observe-et-$watch)
 5. [testing (Protractor)](#testing-protractor)
 6. [testing (Karma)](#testing-karma)
+
+
 
 ## Scopes isolés
 
@@ -67,7 +70,7 @@ app.directive('beerCenter', function () {
 Ce qui est important de voir c'est que l'attribut beer-name fait référence à la variable beer du controller et non a une chaine de caractère 'beer'. Cela veut aussi dire que l'on peut donc passé tout type d'objet contenu dans le controller.
 
 ```javascript
-function appCtrl = function ($scope) {
+function appCtrl ($scope) {
 	$scope.beer = {
 		name: 'Goudale'
 	}
@@ -86,9 +89,76 @@ app.directive('beerCenter', function () {
 <beer-center beer='beer'></beer-center> <!-- affiche Goudale ! -->
 ```
 
-c'est déjà plus parlant. À noter que dans l'objet scope de la directive j'ai écrit directement '=' car l'attribut porte le même nom que la variable du scope isolé qu'on initialise.
+C'est déjà plus parlant. À noter que dans l'objet scope de la directive j'ai écrit directement '=' car l'attribut porte le même nom que la variable du scope isolé qu'on initialise.
+Il existe d'autres opérateurs pour associer des valeurs au scope isolé de la directive :
+
+- '&' : permet d'associer une fonction du controller en permettant la spécification de ses attributs au moment de son invocation dans la directive.
+```javascript
+function appCtrl ($scope) {
+	$scope.changeValue = function (a) {
+		$scope.value = a;
+	}
+
+	$scope.$watch('value', function (n, o) {
+		if (n !== o)
+			alert('the value has changed to ' + $scope.value);
+	});
+}
+
+app.directive('myDirective', function () { return {
+	scope: {
+		'BindFct': '&externalFct'
+	},
+	link: function (scope, element, attrs) {
+		scope.fct({
+			arg1: '"cheese"'
+		});
+	}
+}})
+```
+```html
+<my-directive external-fct="changeValue(arg1)"></my-directive>
+```
+
+- '@' : permet d'associer la valeur d'un attribut à une variable du scope
+```javascript
+return {
+	scope: {
+		inner: '@attributeName'
+	},
+	...
+}
+```
+```html
+<my-directive attribute-name="{{ externalValue }}"></my-directive>
+<!-- chaque fois que 'attribute-name' change, scope.inner est mis à jour -->
+```
 
 
+## Transclude
+
+En plus de pouvoir passer des modèles à une directive, il est possible de passer des templates.
+```javascript
+function appCtrl ($scope) {
+	$scope.name = 'Goudale';
+}
+
+app.directive('beerCenter', function () {
+	return {
+		template: '#<span style="color:red;" ng-transclude></p>#',
+		transclude: true,
+	}
+});
+```
+```html
+<div ng-controller=appCtrl>
+	<beer-center>this will produce {{ name }}.</beer-center>
+	<!--
+		affiche '#this will produce Goudale.#' en rouge
+		entouré par des # en blanc.	
+	-->
+</div>
+```
 ## Propriété link d'une directive
 
 Une directive peut, si elle ne possède pas de scope isolé, avoir accès aux différents éléments (variables, fonctions) du scope dans lequel elle est utilisé. En revanche si un scope isolé est introduit, cet accès doit s'effectué par l'intermédiaire des attributs définis sur la directive. Mais les attributs doivent être utilisés pour personaliser le service qu'offre la directive. Si la directive représente un service, qu'il soit léger ou complexe, toute la logique des traitements doit être contenue dans la directive en elle-même et non dans le controller englobant.
@@ -108,7 +178,27 @@ function link (scope, element, attributes) {
 	**element** est un objet jqLite (objet jQuery simplifié) et permet donc de manipuler le DOM de l'élément aisément. On peut donc par exemple utiliser .on() combiné aux évenement d'écoute d'Angular (e.g. element.on('$destroy', function () { ... })).
 - **attributes** représente les attributs de l'élément.
 
-Comme vu avec les scopes isolés, il est possible d'utiliser des variables du scope père. Cependant il est est aussi possible d'écouter tout changement de valeur d'attribut de la directive. (Voir exemples/chameleon.html)
+Comme vu avec les scopes isolés, il est possible d'utiliser des variables du scope père. Cependant il est est aussi possible d'écouter tout changement de valeur d'attributs de la directive :
+
+```javascript
+attributes.$observe('attributeName', function (n, o) {
+	scope.attributeName = attrs.attributeName;
+})
+```
+Voir [exemples/chameleon.html](https://github.com/vdegenne/AngularJs-explications/blob/master/exemples/chameleon.html) pour plus de détails.
+
+À noter que le code ci-dessus peut-être remplacé par la liaison,
+```javascript
+return {
+	scope: {
+		attributeName: '@attributeName'
+	},
+	...
+}
+```
+À chaque changement de l'attribut, la variable de scope est mise à jour.
+
+
 
 
 ## Différences entre $observe et $watch
